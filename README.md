@@ -96,3 +96,10 @@ npm i dotenv
 npm i -D @types/dotenv
 
 ```
+
+## Migracion
+
+```
+npm run migration:generate first_migration
+npm run migration:run
+```
