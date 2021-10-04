@@ -11,7 +11,7 @@ import {
 import { RoleService } from './role.service';
 import { Role } from './role.entity';
 
-@Controller('users')
+@Controller('roles')
 export class RoleController {
   constructor(private readonly _roleService: RoleService) {}
 
@@ -23,7 +23,7 @@ export class RoleController {
   async getRoles(): Promise<Role[]> {
     return await this._roleService.getAll();
   }
-  @Post('create')
+  @Post()
   async createRole(@Body() role: Role): Promise<Role> {
     return await this._roleService.create(role);
   }
