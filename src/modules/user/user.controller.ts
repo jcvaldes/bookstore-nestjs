@@ -10,7 +10,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserDto } from './dtos/user.dto';
 import { User } from './user.entity';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -22,7 +21,7 @@ export class UserController {
   async getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
     return this._userService.get(id);
   }
-  @UseGuards(AuthGuard())
+  // @UseGuards(AuthGuard())
   @Get()
   async getUsers(): Promise<User[]> {
     return await this._userService.getAll();
@@ -38,5 +37,12 @@ export class UserController {
   @Delete(':id')
   async deleteUser(@Param('id', ParseIntPipe) id: number) {
     await this._userService.delete(id);
+  }
+  @Post('setRole/:userId/:roleId')
+  async setRoleToUser(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('roleId', ParseIntPipe) roleId: number,
+  ) {
+    return this._userService.setRoleToUser(userId, roleId);
   }
 }
