@@ -7,10 +7,12 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDto } from './dtos/user.dto';
 import { User } from './user.entity';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 export class UserController {
@@ -20,6 +22,7 @@ export class UserController {
   async getUser(@Param('id', ParseIntPipe) id: number): Promise<User> {
     return this._userService.get(id);
   }
+  @UseGuards(AuthGuard())
   @Get()
   async getUsers(): Promise<User[]> {
     return await this._userService.getAll();
