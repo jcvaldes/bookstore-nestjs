@@ -6,8 +6,12 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from './user.repository';
 import { MapperService } from '../../shared/mapper.service';
-import { UserDto } from '../../dtos/user.dto';
+import { UserDto } from './dtos/user.dto';
 import { User } from './user.entity';
+import { UserDetails } from './user.details.entity';
+import { getConnection } from 'typeorm';
+import { Role } from '../role/role.entity';
+import { RoleType } from '../role/roletype.enum';
 
 @Injectable()
 export class UserService {
@@ -29,7 +33,7 @@ export class UserService {
     }
     return this._mapperService.map<User, UserDto>(user, new UserDto());
   }
-  async getAll(): Promise<UserDto> {
+  async getAll(): Promise<UserDto[]> {
     const users: User[] = await this._userRepository.find({
       where: { status: 'ACTIVE' },
     });
@@ -40,6 +44,15 @@ export class UserService {
     );
   }
   async create(user: User): Promise<UserDto> {
+    const details = new UserDetails();
+    user.details = details;
+
+    const roleRepo = await getConnection().getRepository(Role);
+    const defaultRole = await roleRepo.findOne({
+      where: { name: RoleType.GENERAL },
+    });
+    user.roles = [defaultRole];
+
     const newUser: User = await this._userRepository.save(user);
     return this._mapperService.map<User, UserDto>(newUser, new UserDto());
   }

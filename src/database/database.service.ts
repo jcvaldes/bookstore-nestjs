@@ -12,17 +12,18 @@ export const databaseProviders = [
     imports: [ConfigModule],
     inject: [ConfigService],
     async useFactory(config: ConfigService) {
-      return {
-        ssl: true,
+      const options = {
+        ssl: Boolean(+config.get(Configuration.POSTGRES_SSL)),
         type: 'postgres' as const,
-        host: config.get(Configuration.HOST),
-        port: Number(config.get(Configuration.PORT)),
-        username: config.get(Configuration.USERNAME),
-        password: config.get(Configuration.PASSWORD),
-        database: config.get(Configuration.DATABASE),
+        host: config.get(Configuration.POSTGRES_HOST),
+        port: Number(config.get(Configuration.POSTGRES_PORT)),
+        username: config.get(Configuration.POSTGRES_USERNAME),
+        password: config.get(Configuration.POSTGRES_PASSWORD),
+        database: config.get(Configuration.POSTGRES_DATABASE),
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         migrations: [__dirname + '/migrations/*{.ts,.js}'],
       } as ConnectionOptions;
+      return options;
     },
   }),
 ];
